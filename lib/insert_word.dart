@@ -3,7 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:vocabularyapp/database_manager.dart';
 import 'package:vocabularyapp/word_manager.dart';
 
-class InsertWord extends StatelessWidget {
+class InsertWord extends StatefulWidget {
+  _InsertWordStage _insertWordStage;
+
+  @override
+  _InsertWordStage createState() {
+    if (_insertWordStage == null) _insertWordStage = _InsertWordStage();
+    return _insertWordStage;
+  }
+
+  InsertWord setWordAndArticle(String word, String article) {
+    _insertWordStage = new _InsertWordStage();
+    _insertWordStage.setWordAndArticle(word, article);
+    return this;
+  }
+}
+
+class _InsertWordStage extends State<InsertWord> {
 
   bool _editing = false;
   String _originalWord;
@@ -13,6 +29,22 @@ class InsertWord extends StatelessWidget {
   String word = '';
   String article = '';
 
+  _InsertWordStage setWordAndArticle(String word, String article) {
+    this.word = word;
+    this.article = article;
+    _editing = true;
+    _originalWord = word;
+    return this;
+  }
+
+  bool _isArticleValid(String article) {
+    if (article == 'der' || article == 'die' || article == 'das') return true;
+    else return false;
+  }
+  @override
+  void setState(fn) {
+
+  }
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
@@ -47,7 +79,9 @@ class InsertWord extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: TextEditingController(text: article),
-                    onChanged: (value) => article = value,
+                    onSubmitted: (String text) {
+                      article = text;
+                    },
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                         hintStyle: TextStyle(color: Colors.white),
@@ -59,7 +93,9 @@ class InsertWord extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: TextEditingController(text: word),
-                    onChanged: (value) => word = value,
+                    onSubmitted: (String text) {
+                      word = text;
+                    },
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       hintStyle: TextStyle(color: Colors.white),
@@ -139,19 +175,6 @@ class InsertWord extends StatelessWidget {
       ),
 
     );
-  }
-
-  InsertWord setWordAndArticle(String word, String article) {
-    word = word;
-    article = article;
-    _editing = true;
-    _originalWord = word;
-    return this;
-  }
-
-  bool _isArticleValid(String article) {
-    if (article == 'der' || article == 'die' || article == 'das') return true;
-    else return false;
   }
 
 }
