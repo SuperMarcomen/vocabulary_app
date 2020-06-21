@@ -5,12 +5,13 @@ import 'package:vocabularyapp/word_manager.dart';
 
 class InsertWord extends StatelessWidget {
 
-  final wordController = TextEditingController();
-  final articleController = TextEditingController();
   bool _editing = false;
   String _originalWord;
   var screenWidth;
   var screenHeight;
+
+  String word = '';
+  String article = '';
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,8 @@ class InsertWord extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: articleController,
+                    controller: TextEditingController(text: article),
+                    onChanged: (value) => article = value,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                         hintStyle: TextStyle(color: Colors.white),
@@ -56,7 +58,8 @@ class InsertWord extends StatelessWidget {
                 ),
                 Expanded(
                   child: TextField(
-                    controller: wordController,
+                    controller: TextEditingController(text: word),
+                    onChanged: (value) => word = value,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       hintStyle: TextStyle(color: Colors.white),
@@ -87,7 +90,7 @@ class InsertWord extends StatelessWidget {
               ),
 
               onPressed: () {
-                if (!_isArticleValid(articleController.text)) {
+                if (!_isArticleValid(article)) {
                   Widget okButton = FlatButton(
                     child: Text('Ok'),
                     onPressed:  () {
@@ -115,11 +118,11 @@ class InsertWord extends StatelessWidget {
                 }
 
                 if (_editing) {
-                  database.updateWordAlternative(_originalWord, wordController.text, articleController.text);
+                  database.updateWordAlternative(_originalWord, word, article);
                 } else {
                   Word word = new Word();
-                  word.word = wordController.text;
-                  word.article = articleController.text;
+                  word.word = this.word;
+                  word.article = article;
                   word.right = 0;
                   word.wrong = 0;
                   database.insertWord(word);
@@ -139,8 +142,8 @@ class InsertWord extends StatelessWidget {
   }
 
   InsertWord setWordAndArticle(String word, String article) {
-    wordController.text = word;
-    articleController.text = article;
+    word = word;
+    article = article;
     _editing = true;
     _originalWord = word;
     return this;
